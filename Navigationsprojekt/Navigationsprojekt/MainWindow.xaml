@@ -1,0 +1,20 @@
+﻿<Window x:Class="Navigationsprojekt.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Navigationsprojekt"
+        xmlns:views="clr-namespace:Navigationsprojekt.Views"
+        xmlns:viewmodels="clr-namespace:Navigationsprojekt.ViewModels"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="900" Width="1100">
+
+    <Window.Resources>
+        <DataTemplate x:Name="Karte_View" DataType="{x:Type viewmodels:Karte_ViewModel}">
+            <views:Karte_View DataContext="{Binding}"></views:Karte_View>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ContentControl Width="768" Height="768" Content="{Binding}" IsTabStop="False" Margin="314,10,10,91"></ContentControl>
+    </Grid>
+</Window>
