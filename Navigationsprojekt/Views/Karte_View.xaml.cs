@@ -18,6 +18,8 @@ using System.Windows.Shapes;
 
 using System.Windows.Threading;
 using Brushes = System.Windows.Media.Brushes;
+using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
 
 namespace Navigationsprojekt.Views
 {
@@ -34,6 +36,10 @@ namespace Navigationsprojekt.Views
         int carSpeedAutomatically = 1;
         bool isRunning = false;
         Bitmap bitmapReal;
+        byte[] staticImageArray;
+        BitmapImage staticImage;
+
+        string[] strings;
 
         DispatcherTimer rideTimer = new DispatcherTimer();
 
@@ -52,13 +58,23 @@ namespace Navigationsprojekt.Views
         
         public void loadImage()
         {
-            BitmapImage myBitmapImage;
+            /*BitmapImage myBitmapImage;
             myBitmapImage = new BitmapImage();
             myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri("https://strapi-website-library-heroku.s3.eu-west-3.amazonaws.com/Welle_rund_rechts_bw_7e06506cbd.bmp?58055.295000000115");
+            myBitmapImage.UriSource = new Uri("C:/Users/vmadmin/Documents/426/M426-Navigationsprojekt/Navigationsprojekt/Karten/Welle_rund_rechts_bw.bmp");
             myBitmapImage.EndInit();
             landMap.Source = myBitmapImage;
-            bitmapReal = BitmapImage2Bitmap(myBitmapImage);
+            bitmapReal = BitmapImage2Bitmap(myBitmapImage);*/
+
+            Image img = Image.FromFile("C:/Users/vmadmin/Documents/426/M426-Navigationsprojekt/Navigationsprojekt/Karten/Welle_rund_rechts_bw.bmp");
+            using (MemoryStream ms = new MemoryStream())
+            {
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                staticImageArray = ms.ToArray();
+            }
+            ToImage(staticImageArray);
+            bitmapReal = BitmapImage2Bitmap(staticImage);
+
         }
 
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
@@ -73,6 +89,20 @@ namespace Navigationsprojekt.Views
                 System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
                 return new Bitmap(bitmap);
+            }
+        }
+
+        public void ToImage(byte[] array)
+        {
+            using (var ms = new System.IO.MemoryStream(array))
+            {
+                staticImage = new BitmapImage();
+                staticImage.BeginInit();
+                staticImage.CacheOption = BitmapCacheOption.OnLoad; // here
+                staticImage.StreamSource = ms;
+                staticImage.EndInit();
+
+                landMap.Source = staticImage;
             }
         }
 
@@ -238,6 +268,44 @@ namespace Navigationsprojekt.Views
             {
                 goSouth = false;
             }
+        }
+
+        private void Startpunkt_Button_Click(object sender, RoutedEventArgs e)
+        {
+            /*using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(@"C:\Users\vmadmin\Desktop\test.txt", true))
+            {
+                byte[] pixels = new byte[size];
+                for (int b = 0; b < bitmapReal.Height; b++)
+                {
+                    for (int c = 0; c < bitmapReal.Width; c++)
+                    {
+                        Console.WriteLine("H: " + b + " W: " + c + " Color: " + bitmapReal.GetPixel(b, c));
+                        file.WriteLine("H: " + b + " W: " + c + " Color: " + bitmapReal.GetPixel(b, c));
+                    }
+                }
+            }*/
+
+            //SetPixel und Image aktualisieren
+            bitmapReal.SetPixel(276, 130, Color.Green);
+            bitmapReal.SetPixel(276, 360, Color.Red);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmapReal.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                staticImageArray = ms.ToArray();
+            }
+            ToImage(staticImageArray);
+            bitmapReal = BitmapImage2Bitmap(staticImage);
+        }
+
+        public void SetPixel2(int x, int y, System.Drawing.Color color)
+        {
+
+        }
+
+        private void Endpunkt_Button_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
