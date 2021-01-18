@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Navigationsprojekt.Views.Karte_View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Navigationsprojekt.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="800">
+    <Canvas x:Name="map" KeyDown="KeyIsDown" KeyUp="KeyIsUp" Focusable="True" Width="786" Height="786" MouseDown="Mouse_Click">
+        <Image x:Name="landMap"></Image>
+        <Rectangle x:Name="car" Visibility="Hidden" Fill="Red" HorizontalAlignment="Left" Height="5" VerticalAlignment="Top" Width="5" Canvas.Left="292" Canvas.Top="598"/>
+        <ProgressBar x:Name="FuelBar" Height="20" Width="150" Value="100" Canvas.Left="530" Canvas.Top="712"></ProgressBar>
+        <Popup x:Name="AlertPopup" IsOpen="False" Width="300" Height="200" Placement="Center">
+            <StackPanel Background="White">
+                <TextBlock Text="Wollen sie den Modus wechseln?" FontSize="16" Foreground="Black"></TextBlock>
+                <Button Height="39" Margin="100,30" Content="Ja" Click="Button_Click"></Button>
+                <Button Height="39" Margin="100,5" Content="Nein" Click="Button_Click_1"></Button>
+            </StackPanel>
+        </Popup>
+        <Popup x:Name="OutOfFuelPopup" IsOpen="False" Width="300" Height="200" Placement="Center">
+            <StackPanel Background="White">
+                <TextBlock Text="Ihr Fahrzeug hat keinen Treibstoff mehr" FontSize="16" Foreground="Black" Height="59"></TextBlock>
+                <Button Height="39" Margin="100,30" Content="Neu Starten" Click="OutOfFuelButton_Click"></Button>
+            </StackPanel>
+        </Popup>
+        <Label Canvas.Left="417" Canvas.Top="688" Foreground="White">Auto Grösse</Label>
+        <TextBox x:Name="CarSize" Canvas.Top="714" Width="99" Canvas.Left="406" TextChanged="CarSize_TextChanged"/>
+        <Button x:Name="start"  Content="Start" Canvas.Left="307" Canvas.Top="712" Width="75" Click="Button_Click_2"/>
+
+    </Canvas>
+</UserControl>
