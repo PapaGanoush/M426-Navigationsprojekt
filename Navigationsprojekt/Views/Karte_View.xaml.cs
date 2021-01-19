@@ -46,6 +46,8 @@ namespace Navigationsprojekt.Views
         int endKoordsY = 0;
         bool starPunkt = false;
         bool endPunkt = false;
+        private List<int[]> weissePixel = new List<int[]>();
+        private List<int[]> schwarzePixel = new List<int[]>();
 
         string[] strings;
 
@@ -61,9 +63,31 @@ namespace Navigationsprojekt.Views
             rideTimer.Interval = TimeSpan.FromMilliseconds(20);
             loadImage();
             rideTimer.Start();
-           
+            leseBereicheAus();
+
         }
-        
+
+        private void leseBereicheAus()
+        {
+            int w = 0;
+            for (int i = 0; i < bitmapReal.Width; i++)
+            {
+                for (int j = 0; j < bitmapReal.Height; j++)
+                {
+                    Color pixel = bitmapReal.GetPixel(i, j);
+
+                    if (pixel.B == 255)
+                    {
+                       weissePixel.Add(new int[2] {i, j});
+                    }
+                    else
+                    {
+                        schwarzePixel.Add(new int[2] {i, j});
+                    }
+                }
+            }
+        }
+
         public void loadImage()
         {
             /*BitmapImage myBitmapImage;
@@ -74,7 +98,7 @@ namespace Navigationsprojekt.Views
             landMap.Source = myBitmapImage;
             bitmapReal = BitmapImage2Bitmap(myBitmapImage);*/
 
-            Image img = Image.FromFile("C:/Users/vmadmin/Documents/426/M426-Navigationsprojekt/Navigationsprojekt/Karten/Welle_rund_rechts_bw.bmp");
+            Image img = Image.FromFile("V:/Schule/M426/M426-Navigationsprojekt/Navigationsprojekt/Karten/Welle_rund_rechts_bw.bmp");
             using (MemoryStream ms = new MemoryStream())
             {
                 img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
