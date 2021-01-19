@@ -168,6 +168,7 @@ namespace Navigationsprojekt.Views
         private void OutOfFuelButton_Click(object sender, RoutedEventArgs e)
         {
             OutOfFuelPopup.IsOpen = false;
+            manuel = true;
             map.Focus();
             FuelBar.Value = 100;
             rideTimer.Start();
@@ -241,10 +242,33 @@ namespace Navigationsprojekt.Views
                     {
                         rideTimer.Stop();
                         OutOfFuelPopup.IsOpen = true;
+
+                    }
+                    else if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).R == 0 &&
+                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).G == 0 &&
+                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).B == 0)
+                    {
+
+                        manuel = false;
+                        Canvas.SetLeft(car, Canvas.GetLeft(car) + 5);
+                        Canvas.SetTop(car, Canvas.GetTop(car) + 5);
+                        OutOfFuelPopup.IsOpen = true;
+
+
+
+                    }
+                    else if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).R == 0 &&
+                       bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).G == 0 &&
+                       bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).B == 0)
+                    {
+                        manuel = false;
+                        Canvas.SetLeft(car, Canvas.GetLeft(car) - 5);
+                        Canvas.SetTop(car, Canvas.GetTop(car) - 5);
+                        OutOfFuelPopup.IsOpen = true;
+
                     }
                     else
                     {
-                        test.Content = endKoordsX + " " + endKoordsY;
 
                         if (manuel == true)
                         {
