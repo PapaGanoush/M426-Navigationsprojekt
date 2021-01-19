@@ -31,21 +31,21 @@ namespace Navigationsprojekt.Views
     public partial class Karte_View : UserControl
     {
 
-        bool goNorth, goWest, goSouth, goEast;
-        bool manuel = true;
-        bool auto = false;
-        int carSpeed = 2;
-        int carSpeedAutomatically = 1;
-        bool isRunning = false;
-        Bitmap bitmapReal;
-        byte[] staticImageArray;
-        BitmapImage staticImage;
-        int startKoordsX = 0;
-        int startKoordsY = 0;
-        int endKoordsX = 0;
-        int endKoordsY = 0;
-        bool starPunkt = false;
-        bool endPunkt = false;
+        private bool goNorth, goWest, goSouth, goEast;
+        private bool manuel = true;
+        private bool auto = false;
+        private int carSpeed = 2;
+        private int carSpeedAutomatically = 1;
+        private bool isRunning = false;
+        private Bitmap bitmapReal;
+        private byte[] staticImageArray;
+        private BitmapImage staticImage;
+        private int startKoordsX = 0;
+        private int startKoordsY = 0;
+        private int endKoordsX = 0;
+        private int endKoordsY = 0;
+        private bool starPunkt = false;
+        private bool endPunkt = false;
         private List<int[]> weissePixel = new List<int[]>();
         private List<int[]> schwarzePixel = new List<int[]>();
 
@@ -67,6 +67,10 @@ namespace Navigationsprojekt.Views
 
         }
 
+        /*
+        Liest den gültigen und ungültigen Bereich der Bitmap anhand der Farbe der Pixel heraus
+        und speichert jeden Pixel in einer int-Array Liste
+        */
         private void leseBereicheAus()
         {
             int w = 0;
@@ -88,17 +92,10 @@ namespace Navigationsprojekt.Views
             }
         }
 
+        //Lädt die Karte von einem bmp File
         public void loadImage()
         {
-            /*BitmapImage myBitmapImage;
-            myBitmapImage = new BitmapImage();
-            myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri("C:/Users/vmadmin/Documents/426/M426-Navigationsprojekt/Navigationsprojekt/Karten/Welle_rund_rechts_bw.bmp");
-            myBitmapImage.EndInit();
-            landMap.Source = myBitmapImage;
-            bitmapReal = BitmapImage2Bitmap(myBitmapImage);*/
-
-            Image img = Image.FromFile("V:/Schule/M426/M426-Navigationsprojekt/Navigationsprojekt/Karten/Welle_rund_rechts_bw.bmp");
+            Image img = Image.FromFile("../../Karten/Welle_rund_rechts_bw.bmp");
             using (MemoryStream ms = new MemoryStream())
             {
                 img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -109,6 +106,7 @@ namespace Navigationsprojekt.Views
 
         }
 
+        //Lädt die Bitmap neu
         public void reloadImage()
         {
             using (MemoryStream ms = new MemoryStream())
@@ -120,6 +118,7 @@ namespace Navigationsprojekt.Views
             bitmapReal = BitmapImage2Bitmap(staticImage);
         }
 
+        //Transformiert ein BitmapImage in eine Bitmap
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
             // BitmapImage bitmapImage = new BitmapImage(new Uri("../Images/test.png", UriKind.Relative));
@@ -135,6 +134,7 @@ namespace Navigationsprojekt.Views
             }
         }
 
+        //Transformiert ein byte-Array in ein Bild
         public void ToImage(byte[] array)
         {
             using (var ms = new System.IO.MemoryStream(array))
