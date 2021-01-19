@@ -44,6 +44,8 @@ namespace Navigationsprojekt.Views
         int startKoordsY = 0;
         int endKoordsX = 0;
         int endKoordsY = 0;
+        bool starPunkt = false;
+        bool endPunkt = false;
 
         string[] strings;
 
@@ -175,12 +177,16 @@ namespace Navigationsprojekt.Views
         {
             if(CarSize.Text != "")
             {
-               isRunning = true;
+               
                 CarSize.Background = Brushes.Green;
                 start.IsEnabled = false;
                 CarSize.IsEnabled = false;
+                Canvas.SetLeft(car, startKoordsX);
+                Canvas.SetTop(car, startKoordsY);
+                isRunning = true;
                 car.Visibility = Visibility.Visible;
                 map.Focus();
+                
             }
             else
             {
@@ -197,41 +203,54 @@ namespace Navigationsprojekt.Views
 
         private void RideTimerEvent(object sender, EventArgs e)
         {
-            if (FuelBar.Value == 0)
+            if (isRunning)
             {
-                rideTimer.Stop();
-                OutOfFuelPopup.IsOpen = true;
-            }
-            else
-            {
-
-                if (manuel == true)
+                if (FuelBar.Value == 0)
                 {
-                    if (goWest == true && Canvas.GetLeft(car) > 5)
-                    {
-                        Canvas.SetLeft(car, Canvas.GetLeft(car) - carSpeed);
-                        FuelBar.Value -= 0.1;
-                    }
-                    if (goNorth == true && Canvas.GetTop(car) > 5)
-                    {
-                        Canvas.SetTop(car, Canvas.GetTop(car) - carSpeed);
-                        FuelBar.Value -= 0.1;
-                    }
-                    if (goEast == true && Canvas.GetLeft(car) + (car.Width + 20) < 800)
-                    {
-                        Canvas.SetLeft(car, Canvas.GetLeft(car) + carSpeed);
-                        FuelBar.Value -= 0.1;
-                    }
-                    if (goSouth == true && Canvas.GetTop(car) + (car.Height + 20) < 800)
-                    {
-                        Canvas.SetTop(car, Canvas.GetTop(car) + carSpeed);
-                        FuelBar.Value -= 0.1;
-                    }
+                    rideTimer.Stop();
+                    OutOfFuelPopup.IsOpen = true;
                 }
-                else if (auto == true)
+                else
                 {
-                    Canvas.SetTop(car, Canvas.GetTop(car) - carSpeedAutomatically);
-                    FuelBar.Value -= 0.1;
+                    if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car)), Convert.ToInt32(Canvas.GetTop(car))).R == 255 &&
+                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car)), Convert.ToInt32(Canvas.GetTop(car))).B == 0)
+                    {
+                        rideTimer.Stop();
+                        OutOfFuelPopup.IsOpen = true;
+                    }
+                    else
+                    {
+                        test.Content = endKoordsX + " " + endKoordsY;
+
+                        if (manuel == true)
+                        {
+                            if (goWest == true && Canvas.GetLeft(car) > 5)
+                            {
+                                Canvas.SetLeft(car, Canvas.GetLeft(car) - carSpeed);
+                                FuelBar.Value -= 0.1;
+                            }
+                            if (goNorth == true && Canvas.GetTop(car) > 5)
+                            {
+                                Canvas.SetTop(car, Canvas.GetTop(car) - carSpeed);
+                                FuelBar.Value -= 0.1;
+                            }
+                            if (goEast == true && Canvas.GetLeft(car) + (car.Width + 20) < 800)
+                            {
+                                Canvas.SetLeft(car, Canvas.GetLeft(car) + carSpeed);
+                                FuelBar.Value -= 0.1;
+                            }
+                            if (goSouth == true && Canvas.GetTop(car) + (car.Height + 20) < 800)
+                            {
+                                Canvas.SetTop(car, Canvas.GetTop(car) + carSpeed);
+                                FuelBar.Value -= 0.1;
+                            }
+                        }
+                        else if (auto == true)
+                        {
+                            Canvas.SetTop(car, Canvas.GetTop(car) - carSpeedAutomatically);
+                            FuelBar.Value -= 0.1;
+                        }
+                    }
                 }
             }
         }
@@ -290,62 +309,68 @@ namespace Navigationsprojekt.Views
         private void Startpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
             //SetPixel und Image aktualisieren
+            starPunkt = true;
             landMap.MouseLeftButtonDown += new MouseButtonEventHandler(landMap_MouseLeftButtonDown);
+
             
-            if(startKoordsX != 0)
-            {
-                Rectangle yourRectangle = new Rectangle(startKoordsX, startKoordsY, 9, 9);
-                SolidBrush greenBrush = new SolidBrush(Color.Green);
-
-                using (Graphics G = Graphics.FromImage(bitmapReal))
-                {
-                    G.FillRectangle(greenBrush, yourRectangle);
-                }
-
-                reloadImage();
-                Startpunkt_Button.IsEnabled = false;
-            }
         }
 
         private void landMap_MouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            Point pointtest = e.GetPosition(landMap);
-            Console.WriteLine(pointtest.ToString());
-            startKoordsX = Convert.ToInt32(pointtest.X);
-            startKoordsY = Convert.ToInt32(pointtest.Y);
+            if (starPunkt)
+            {
+                Point pointtest = e.GetPosition(landMap);
+                Console.WriteLine(pointtest.ToString());
+                startKoordsX = Convert.ToInt32(pointtest.X);
+                startKoordsY = Convert.ToInt32(pointtest.Y);
+
+                if (startKoordsX != 0)
+                {
+                    Rectangle yourRectangle = new Rectangle(startKoordsX, startKoordsY, 9, 9);
+                    SolidBrush greenBrush = new SolidBrush(Color.Green);
+
+                    using (Graphics G = Graphics.FromImage(bitmapReal))
+                    {
+                        G.FillRectangle(greenBrush, yourRectangle);
+                    }
+
+                    reloadImage();
+                    Startpunkt_Button.IsEnabled = false;
+                    starPunkt = false;
+                }
+            }else if (endPunkt)
+            {
+                Point pointtest = e.GetPosition(landMap);
+                Console.WriteLine(pointtest.ToString());
+                endKoordsX = Convert.ToInt32(pointtest.X);
+                endKoordsY = Convert.ToInt32(pointtest.Y);
+
+                if (endKoordsX != 0)
+                {
+                    Rectangle yourRectangle = new Rectangle(endKoordsX, endKoordsY, 9, 9);
+                    SolidBrush greenBrush = new SolidBrush(Color.Red);
+
+                    using (Graphics G = Graphics.FromImage(bitmapReal))
+                    {
+                        G.FillRectangle(greenBrush, yourRectangle);
+                    }
+
+                    reloadImage();
+                    Endpunkt_Button.IsEnabled = false;
+                    endPunkt = false;
+                }
+            }
         }
 
-        private void landMap_MouseRightButtonDown(object sender, MouseEventArgs e)
-        {
-            Point pointtest = e.GetPosition(landMap);
-            Console.WriteLine(pointtest.ToString());
-            endKoordsX = Convert.ToInt32(pointtest.X);
-            endKoordsY = Convert.ToInt32(pointtest.Y);
-        }
-
-        public void SetPixel2(int x, int y, System.Drawing.Color color)
-        {
-
-        }
+     
 
         private void Endpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
             //SetPixel und Image aktualisieren
-            landMap.MouseRightButtonDown += new MouseButtonEventHandler(landMap_MouseRightButtonDown);
+            endPunkt = true;
+            landMap.MouseLeftButtonDown += new MouseButtonEventHandler(landMap_MouseLeftButtonDown);
 
-            if (endKoordsX != 0)
-            {
-                Rectangle yourRectangle = new Rectangle(endKoordsX, endKoordsY, 9, 9);
-                SolidBrush greenBrush = new SolidBrush(Color.Red);
-
-                using (Graphics G = Graphics.FromImage(bitmapReal))
-                {
-                    G.FillRectangle(greenBrush, yourRectangle);
-                }
-
-                reloadImage();
-                Endpunkt_Button.IsEnabled = false;
-            }
+            
         }
     }
 }
