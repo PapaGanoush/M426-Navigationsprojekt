@@ -20,6 +20,8 @@ using System.Windows.Threading;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
+using Point = System.Windows.Point;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Navigationsprojekt.Views
 {
@@ -38,6 +40,10 @@ namespace Navigationsprojekt.Views
         Bitmap bitmapReal;
         byte[] staticImageArray;
         BitmapImage staticImage;
+        int startKoordsX = 0;
+        int startKoordsY = 0;
+        int endKoordsX = 0;
+        int endKoordsY = 0;
 
         string[] strings;
 
@@ -75,6 +81,17 @@ namespace Navigationsprojekt.Views
             ToImage(staticImageArray);
             bitmapReal = BitmapImage2Bitmap(staticImage);
 
+        }
+
+        public void reloadImage()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmapReal.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                staticImageArray = ms.ToArray();
+            }
+            ToImage(staticImageArray);
+            bitmapReal = BitmapImage2Bitmap(staticImage);
         }
 
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
@@ -171,12 +188,12 @@ namespace Navigationsprojekt.Views
             }
             
         }
-        private void Mouse_Click(object sender, MouseEventArgs e)
+        /*private void Mouse_Click(object sender, MouseEventArgs e)
         {
             System.Windows.Point start = Mouse.GetPosition(map);
             bitmapReal.SetPixel(Convert.ToInt32(start.X),Convert.ToInt32(start.Y), System.Drawing.Color.Red);
             
-        }
+        }*/
 
         private void RideTimerEvent(object sender, EventArgs e)
         {
@@ -272,31 +289,38 @@ namespace Navigationsprojekt.Views
 
         private void Startpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
-            /*using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(@"C:\Users\vmadmin\Desktop\test.txt", true))
-            {
-                byte[] pixels = new byte[size];
-                for (int b = 0; b < bitmapReal.Height; b++)
-                {
-                    for (int c = 0; c < bitmapReal.Width; c++)
-                    {
-                        Console.WriteLine("H: " + b + " W: " + c + " Color: " + bitmapReal.GetPixel(b, c));
-                        file.WriteLine("H: " + b + " W: " + c + " Color: " + bitmapReal.GetPixel(b, c));
-                    }
-                }
-            }*/
-
             //SetPixel und Image aktualisieren
-            bitmapReal.SetPixel(276, 130, Color.Green);
-            bitmapReal.SetPixel(276, 360, Color.Red);
-
-            using (MemoryStream ms = new MemoryStream())
+            landMap.MouseLeftButtonDown += new MouseButtonEventHandler(landMap_MouseLeftButtonDown);
+            
+            if(startKoordsX != 0)
             {
-                bitmapReal.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-                staticImageArray = ms.ToArray();
+                Rectangle yourRectangle = new Rectangle(startKoordsX, startKoordsY, 9, 9);
+                SolidBrush greenBrush = new SolidBrush(Color.Green);
+
+                using (Graphics G = Graphics.FromImage(bitmapReal))
+                {
+                    G.FillRectangle(greenBrush, yourRectangle);
+                }
+
+                reloadImage();
+                Startpunkt_Button.IsEnabled = false;
             }
-            ToImage(staticImageArray);
-            bitmapReal = BitmapImage2Bitmap(staticImage);
+        }
+
+        private void landMap_MouseLeftButtonDown(object sender, MouseEventArgs e)
+        {
+            Point pointtest = e.GetPosition(landMap);
+            Console.WriteLine(pointtest.ToString());
+            startKoordsX = Convert.ToInt32(pointtest.X);
+            startKoordsY = Convert.ToInt32(pointtest.Y);
+        }
+
+        private void landMap_MouseRightButtonDown(object sender, MouseEventArgs e)
+        {
+            Point pointtest = e.GetPosition(landMap);
+            Console.WriteLine(pointtest.ToString());
+            endKoordsX = Convert.ToInt32(pointtest.X);
+            endKoordsY = Convert.ToInt32(pointtest.Y);
         }
 
         public void SetPixel2(int x, int y, System.Drawing.Color color)
@@ -306,6 +330,22 @@ namespace Navigationsprojekt.Views
 
         private void Endpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
+            //SetPixel und Image aktualisieren
+            landMap.MouseRightButtonDown += new MouseButtonEventHandler(landMap_MouseRightButtonDown);
+
+            if (endKoordsX != 0)
+            {
+                Rectangle yourRectangle = new Rectangle(endKoordsX, endKoordsY, 9, 9);
+                SolidBrush greenBrush = new SolidBrush(Color.Red);
+
+                using (Graphics G = Graphics.FromImage(bitmapReal))
+                {
+                    G.FillRectangle(greenBrush, yourRectangle);
+                }
+
+                reloadImage();
+                Endpunkt_Button.IsEnabled = false;
+            }
         }
     }
 }
