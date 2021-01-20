@@ -44,7 +44,7 @@ namespace Navigationsprojekt.Views
         private int startKoordsY = 0;
         private int endKoordsX = 0;
         private int endKoordsY = 0;
-        private bool starPunkt = false;
+        private bool startPunkt = false;
         private bool endPunkt = false;
         private List<int[]> weissePixel = new List<int[]>();
         private List<int[]> schwarzePixel = new List<int[]>();
@@ -82,11 +82,11 @@ namespace Navigationsprojekt.Views
 
                     if (pixel.B == 255)
                     {
-                       weissePixel.Add(new int[2] {i, j});
+                        weissePixel.Add(new int[2] { i, j });
                     }
                     else
                     {
-                        schwarzePixel.Add(new int[2] {i, j});
+                        schwarzePixel.Add(new int[2] { i, j });
                     }
                 }
             }
@@ -192,17 +192,17 @@ namespace Navigationsprojekt.Views
                     car.Height = Convert.ToDouble(CarSize.Text);
                     car.Width = Convert.ToDouble(CarSize.Text);
                 }
-                
+
             }
 
-            
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if(CarSize.Text != "")
+            if (CarSize.Text != "")
             {
-               
+
                 CarSize.Background = Brushes.Green;
                 start.IsEnabled = false;
                 CarSize.IsEnabled = false;
@@ -211,13 +211,13 @@ namespace Navigationsprojekt.Views
                 isRunning = true;
                 car.Visibility = Visibility.Visible;
                 map.Focus();
-                
+
             }
             else
             {
                 CarSize.Background = Brushes.Red;
             }
-            
+
         }
         /*private void Mouse_Click(object sender, MouseEventArgs e)
         {
@@ -305,10 +305,9 @@ namespace Navigationsprojekt.Views
 
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Left)
+            if (e.Key == Key.Left)
             {
                 goWest = true;
-                Console.WriteLine("hi");
             }
             if (e.Key == Key.Up)
             {
@@ -322,12 +321,12 @@ namespace Navigationsprojekt.Views
             {
                 goSouth = true;
             }
-            if(e.Key == Key.M)
+            if (e.Key == Key.M)
             {
                 AlertPopup.IsOpen = true;
                 rideTimer.Stop();
             }
-            if(e.Key == Key.A)
+            if (e.Key == Key.A)
             {
                 auto = true;
                 manuel = false;
@@ -357,68 +356,68 @@ namespace Navigationsprojekt.Views
         private void Startpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
             //SetPixel und Image aktualisieren
-            starPunkt = true;
+            endPunkt = false;
+            startPunkt = true;
             landMap.MouseLeftButtonDown += new MouseButtonEventHandler(landMap_MouseLeftButtonDown);
-
-            
         }
 
         private void landMap_MouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            if (starPunkt)
+            if (startPunkt || endPunkt)
             {
                 Point pointtest = e.GetPosition(landMap);
-                Console.WriteLine(pointtest.ToString());
-                startKoordsX = Convert.ToInt32(pointtest.X);
-                startKoordsY = Convert.ToInt32(pointtest.Y);
+                int x = Convert.ToInt32(pointtest.X);
+                int y = Convert.ToInt32(pointtest.Y);
 
-                if (startKoordsX != 0)
+                Color clickedPixel = bitmapReal.GetPixel(x, y);
+                if (!clickedPixel.Name.Equals("ffffffff"))
                 {
-                    Rectangle yourRectangle = new Rectangle(startKoordsX, startKoordsY, 9, 9);
-                    SolidBrush greenBrush = new SolidBrush(Color.Green);
-
-                    using (Graphics G = Graphics.FromImage(bitmapReal))
-                    {
-                        G.FillRectangle(greenBrush, yourRectangle);
-                    }
-
-                    reloadImage();
-                    Startpunkt_Button.IsEnabled = false;
-                    starPunkt = false;
+                    endPunkt = false;
+                    startPunkt = false;
+                    MessageBox.Show("Out of bounds. Only placeable on route.", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
                 }
-            }else if (endPunkt)
-            {
-                Point pointtest = e.GetPosition(landMap);
-                Console.WriteLine(pointtest.ToString());
-                endKoordsX = Convert.ToInt32(pointtest.X);
-                endKoordsY = Convert.ToInt32(pointtest.Y);
 
-                if (endKoordsX != 0)
+                if (x == 0)
                 {
-                    Rectangle yourRectangle = new Rectangle(endKoordsX, endKoordsY, 9, 9);
-                    SolidBrush greenBrush = new SolidBrush(Color.Red);
-
-                    using (Graphics G = Graphics.FromImage(bitmapReal))
-                    {
-                        G.FillRectangle(greenBrush, yourRectangle);
-                    }
-
-                    reloadImage();
+                    return;
+                }
+                Rectangle yourRectangle = new Rectangle(x, y, 9, 9);
+                SolidBrush solidBrush;
+                if (startPunkt)
+                {
+                    solidBrush = new SolidBrush(Color.Green);
+                    startKoordsX = x;
+                    startKoordsY = y;
+                    Startpunkt_Button.IsEnabled = false;
+                    startPunkt = false;
+                }
+                else
+                {
+                    solidBrush = new SolidBrush(Color.Red);
+                    endKoordsX = x;
+                    endKoordsY = y;
                     Endpunkt_Button.IsEnabled = false;
                     endPunkt = false;
                 }
+
+                using (Graphics G = Graphics.FromImage(bitmapReal))
+                {
+                    G.FillRectangle(solidBrush, yourRectangle);
+                }
+
+                reloadImage();
             }
         }
 
-     
+
 
         private void Endpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
             //SetPixel und Image aktualisieren
             endPunkt = true;
+            startPunkt = false;
             landMap.MouseLeftButtonDown += new MouseButtonEventHandler(landMap_MouseLeftButtonDown);
-
-            
         }
     }
 }
