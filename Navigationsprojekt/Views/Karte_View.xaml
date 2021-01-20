@@ -22,6 +22,18 @@
                 <Button Height="39" Margin="100,30" Content="Neu Starten" Click="OutOfFuelButton_Click"></Button>
             </StackPanel>
         </Popup>
+        <Popup x:Name="atention" IsOpen="False" Width="300" Height="200" Placement="Center">
+            <StackPanel Background="White">
+                <TextBlock Text="Achtung Kolision!" FontSize="16" Foreground="Black" Height="59"></TextBlock>
+                <Button Height="39" Margin="100,30" Content="Okey" Click="Button_Click_3" ></Button>
+            </StackPanel>
+        </Popup>
+        <Popup x:Name="routeDone" IsOpen="False" Width="300" Height="200" Placement="Center">
+            <StackPanel Background="White">
+                <TextBlock Text="Route Beendet" FontSize="16" Foreground="Black" Height="59"></TextBlock>
+                <Button Height="39" Margin="100,30" Content="Neustart" Click="Button_Click_4" ></Button>
+            </StackPanel>
+        </Popup>
         <Label x:Name="test" Canvas.Left="417" Canvas.Top="688" Foreground="White">Auto Grösse</Label>
         <TextBox x:Name="CarSize" Canvas.Top="714" Width="99" Canvas.Left="406" TextChanged="CarSize_TextChanged"/>
         <Button x:Name="start"  Content="Start" Canvas.Left="307" Canvas.Top="712" Width="75" Click="Button_Click_2"/>

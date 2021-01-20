@@ -46,6 +46,8 @@ namespace Navigationsprojekt.Views
         private int endKoordsY = 0;
         private bool startPunkt = false;
         private bool endPunkt = false;
+        private bool setStart = false;
+        private bool setEnd = false;
         private List<int[]> weissePixel = new List<int[]>();
         private List<int[]> schwarzePixel = new List<int[]>();
 
@@ -63,6 +65,7 @@ namespace Navigationsprojekt.Views
             rideTimer.Interval = TimeSpan.FromMilliseconds(20);
             loadImage();
             rideTimer.Start();
+            start.IsEnabled = false;
             leseBereicheAus();
 
         }
@@ -169,40 +172,30 @@ namespace Navigationsprojekt.Views
         {
             OutOfFuelPopup.IsOpen = false;
             manuel = true;
+            rideTimer.Start();
             map.Focus();
             FuelBar.Value = 100;
-            rideTimer.Start();
         }
 
         private void CarSize_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Regex regex = new Regex(@"[\d]");
 
-            regex = new Regex("[0-9]{1,2}?$");
-
-            if (regex.IsMatch(CarSize.Text))
-            {
-                if (CarSize.Text == "")
-                {
-                    car.Height = 1;
-                    car.Width = 1;
-                }
-                else
-                {
-                    car.Height = Convert.ToDouble(CarSize.Text);
-                    car.Width = Convert.ToDouble(CarSize.Text);
-                }
-
-            }
+           
 
 
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (CarSize.Text != "")
-            {
 
+            Regex regex = new Regex("^[1-5]$");
+
+            
+
+            if (regex.IsMatch(CarSize.Text))
+            {
+                car.Height = Convert.ToDouble(CarSize.Text);
+                car.Width = Convert.ToDouble(CarSize.Text);
                 CarSize.Background = Brushes.Green;
                 start.IsEnabled = false;
                 CarSize.IsEnabled = false;
@@ -241,7 +234,7 @@ namespace Navigationsprojekt.Views
                         bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car)), Convert.ToInt32(Canvas.GetTop(car))).B == 0)
                     {
                         rideTimer.Stop();
-                        OutOfFuelPopup.IsOpen = true;
+                        routeDone.IsOpen = true;
 
                     }
                     else if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).R == 0 &&
@@ -252,7 +245,7 @@ namespace Navigationsprojekt.Views
                         manuel = false;
                         Canvas.SetLeft(car, Canvas.GetLeft(car) + 5);
                         Canvas.SetTop(car, Canvas.GetTop(car) + 5);
-                        OutOfFuelPopup.IsOpen = true;
+                        atention.IsOpen = true;
 
 
 
@@ -264,7 +257,7 @@ namespace Navigationsprojekt.Views
                         manuel = false;
                         Canvas.SetLeft(car, Canvas.GetLeft(car) - 5);
                         Canvas.SetTop(car, Canvas.GetTop(car) - 5);
-                        OutOfFuelPopup.IsOpen = true;
+                        atention.IsOpen = true;
 
                     }
                     else
@@ -353,6 +346,36 @@ namespace Navigationsprojekt.Views
             }
         }
 
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            atention.IsOpen = false;
+            rideTimer.Start();
+            manuel = true;
+            map.Focus();
+
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            routeDone.IsOpen = false;
+            setEnd = false;
+            setStart = false;
+            endPunkt = false;
+            startPunkt = false;
+            Startpunkt_Button.IsEnabled = true;
+            Endpunkt_Button.IsEnabled = true;
+            startKoordsX = 0;
+            startKoordsY = 0;
+            endKoordsX = 0;
+            endKoordsY = 0;
+            car.Visibility = Visibility.Hidden;
+            CarSize.IsEnabled = true;
+            loadImage();
+            map.Focus();
+            rideTimer.Start();
+
+    }
+
         private void Startpunkt_Button_Click(object sender, RoutedEventArgs e)
         {
             //SetPixel und Image aktualisieren
@@ -390,7 +413,14 @@ namespace Navigationsprojekt.Views
                     startKoordsX = x;
                     startKoordsY = y;
                     Startpunkt_Button.IsEnabled = false;
+                    setStart = true;
                     startPunkt = false;
+
+                    if (setEnd && setStart)
+                    {
+                        start.IsEnabled = true;
+                    }
+
                 }
                 else
                 {
@@ -398,7 +428,13 @@ namespace Navigationsprojekt.Views
                     endKoordsX = x;
                     endKoordsY = y;
                     Endpunkt_Button.IsEnabled = false;
+                    setEnd = true;
                     endPunkt = false;
+
+                    if(setEnd && setStart)
+                    {
+                        start.IsEnabled = true;
+                    }
                 }
 
                 using (Graphics G = Graphics.FromImage(bitmapReal))
