@@ -17,27 +17,28 @@
             </StackPanel>
         </Popup>
         <Popup x:Name="OutOfFuelPopup" IsOpen="False" Width="300" Height="200" Placement="Center">
-            <StackPanel Background="White">
+            <StackPanel Background="LightGray">
                 <TextBlock Text="Ihr Fahrzeug hat keinen Treibstoff mehr" FontSize="16" Foreground="Black" Height="59"></TextBlock>
-                <Button Height="39" Margin="100,30" Content="Neu Starten" Click="OutOfFuelButton_Click"></Button>
+                <Button Height="39" Margin="100,30" Content="Tanken" Click="OutOfFuelButton_Click"></Button>
             </StackPanel>
         </Popup>
         <Popup x:Name="atention" IsOpen="False" Width="300" Height="200" Placement="Center">
-            <StackPanel Background="White">
+            <StackPanel Background="LightGray">
                 <TextBlock Text="Achtung Kolision!" FontSize="16" Foreground="Black" Height="59"></TextBlock>
-                <Button Height="39" Margin="100,30" Content="Okey" Click="Button_Click_3" ></Button>
+                <Button Height="39" Margin="100,30" Content="Okay" Click="Button_Click_3" ></Button>
             </StackPanel>
         </Popup>
         <Popup x:Name="routeDone" IsOpen="False" Width="300" Height="200" Placement="Center">
-            <StackPanel Background="White">
+            <StackPanel Background="LightGray">
                 <TextBlock Text="Route Beendet" FontSize="16" Foreground="Black" Height="59"></TextBlock>
                 <Button Height="39" Margin="100,30" Content="Neustart" Click="Button_Click_4" ></Button>
             </StackPanel>
         </Popup>
-        <Label x:Name="test" Canvas.Left="417" Canvas.Top="688" Foreground="White">Auto Grösse</Label>
-        <TextBox x:Name="CarSize" Canvas.Top="714" Width="99" Canvas.Left="406" TextChanged="CarSize_TextChanged"/>
-        <Button x:Name="start"  Content="Start" Canvas.Left="307" Canvas.Top="712" Width="75" Click="Button_Click_2"/>
+        <Label x:Name="test" Canvas.Left="309" Canvas.Top="683" Foreground="Black">Auto Grösse</Label>
+        <TextBox x:Name="CarSize" Canvas.Top="709" Width="99" Canvas.Left="298" TextChanged="CarSize_TextChanged" Height="21"/>
+        <Button x:Name="start"  Content="Start" Canvas.Left="420" Canvas.Top="706" Width="75" Click="Button_Click_2" Height="26"/>
         <Button x:Name="Startpunkt_Button"  Content="Startpunkt fixieren" Canvas.Left="20" Canvas.Top="706" Width="125" Click="Startpunkt_Button_Click" Height="26"/>
         <Button x:Name="Endpunkt_Button"  Content="Endpunkt fixieren" Canvas.Left="159" Canvas.Top="706" Width="125" Click="Endpunkt_Button_Click" Height="26"/>
+        <Label x:Name="test_Copy" Canvas.Left="586" Canvas.Top="681" Foreground="Black" Content="Benzin"/>
     </Canvas>
 </UserControl>

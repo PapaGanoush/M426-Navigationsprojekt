@@ -34,7 +34,7 @@ namespace Navigationsprojekt.Views
         private bool goNorth, goWest, goSouth, goEast;
         private bool manuel = true;
         private bool auto = false;
-        private int carSpeed = 2;
+        private double carSpeed = 1.25;
         private int carSpeedAutomatically = 1;
         private bool isRunning = false;
         private Bitmap bitmapReal;
@@ -48,6 +48,7 @@ namespace Navigationsprojekt.Views
         private bool endPunkt = false;
         private bool setStart = false;
         private bool setEnd = false;
+        private double carSizevar = 0;
         private List<int[]> weissePixel = new List<int[]>();
         private List<int[]> schwarzePixel = new List<int[]>();
 
@@ -190,12 +191,12 @@ namespace Navigationsprojekt.Views
 
             Regex regex = new Regex("^[1-5]$");
 
-            
+            carSizevar = Convert.ToDouble(CarSize.Text);
 
             if (regex.IsMatch(CarSize.Text))
             {
-                car.Height = Convert.ToDouble(CarSize.Text);
-                car.Width = Convert.ToDouble(CarSize.Text);
+                car.Height = carSizevar;
+                car.Width = carSizevar;
                 CarSize.Background = Brushes.Green;
                 start.IsEnabled = false;
                 CarSize.IsEnabled = false;
@@ -204,6 +205,25 @@ namespace Navigationsprojekt.Views
                 isRunning = true;
                 car.Visibility = Visibility.Visible;
                 map.Focus();
+
+                switch (carSizevar)
+                {
+                    case 1:
+                        car.Fill = Brushes.Orange;
+                        break;
+                    case 2:
+                        car.Fill = Brushes.Turquoise;
+                        break;
+                    case 3:
+                        car.Fill = Brushes.Yellow;
+                        break;
+                    case 4:
+                        car.Fill = Brushes.Purple;
+                        break;
+                    default:
+                        car.Fill = Brushes.Blue;
+                        break;
+                }
 
             }
             else
@@ -230,30 +250,24 @@ namespace Navigationsprojekt.Views
                 }
                 else
                 {
-                    if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car)), Convert.ToInt32(Canvas.GetTop(car))).R == 255 &&
-                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car)), Convert.ToInt32(Canvas.GetTop(car))).B == 0)
+                    var getPixelfromCarPosition = bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car)), Convert.ToInt32(Canvas.GetTop(car)));
+                    var getPixelfromCarPositionminus1 = bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1));
+                    var getPixelfromCarPositionplusCarSize  = bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + carSizevar), Convert.ToInt32(Canvas.GetTop(car) + carSizevar));
+
+                    if (getPixelfromCarPosition.R == 255 && getPixelfromCarPosition.B == 0)
                     {
                         rideTimer.Stop();
                         routeDone.IsOpen = true;
-
                     }
-                    else if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).R == 0 &&
-                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).G == 0 &&
-                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) - 1), Convert.ToInt32(Canvas.GetTop(car) - 1)).B == 0)
+                    else if (getPixelfromCarPositionminus1.R == 0 && getPixelfromCarPositionminus1.G == 0 && getPixelfromCarPositionminus1.B == 0)
                     {
-
                         manuel = false;
                         auto = false;
                         Canvas.SetLeft(car, Canvas.GetLeft(car) + 5);
                         Canvas.SetTop(car, Canvas.GetTop(car) + 5);
                         atention.IsOpen = true;
-
-
-
                     }
-                    else if (bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).R == 0 &&
-                       bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).G == 0 &&
-                       bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).B == 0)
+                    else if (getPixelfromCarPositionplusCarSize.R == 0 && getPixelfromCarPositionplusCarSize.G == 0 && getPixelfromCarPositionplusCarSize.B == 0)
                     {
                         manuel = false;
                         auto = false;
@@ -282,7 +296,7 @@ namespace Navigationsprojekt.Views
                                 Canvas.SetLeft(car, Canvas.GetLeft(car) + carSpeed);
                                 FuelBar.Value -= 0.1;
                             }
-                            if (goSouth == true && Canvas.GetTop(car) + (car.Height + 20) < 800)
+                            if (goSouth == true && Canvas.GetTop(car) + (car.Height + 20) < 530)
                             {
                                 Canvas.SetTop(car, Canvas.GetTop(car) + carSpeed);
                                 FuelBar.Value -= 0.1;
@@ -372,6 +386,9 @@ namespace Navigationsprojekt.Views
             endKoordsY = 0;
             car.Visibility = Visibility.Hidden;
             CarSize.IsEnabled = true;
+            CarSize.Text = "";
+            CarSize.Background = Brushes.Transparent;
+            FuelBar.Value = 1;
             loadImage();
             map.Focus();
             rideTimer.Start();
@@ -407,7 +424,7 @@ namespace Navigationsprojekt.Views
                 {
                     return;
                 }
-                Rectangle yourRectangle = new Rectangle(x, y, 9, 9);
+                Rectangle yourRectangle = new Rectangle(x, y, 12, 12);
                 SolidBrush solidBrush;
                 if (startPunkt)
                 {
