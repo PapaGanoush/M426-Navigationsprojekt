@@ -243,6 +243,7 @@ namespace Navigationsprojekt.Views
                     {
 
                         manuel = false;
+                        auto = false;
                         Canvas.SetLeft(car, Canvas.GetLeft(car) + 5);
                         Canvas.SetTop(car, Canvas.GetTop(car) + 5);
                         atention.IsOpen = true;
@@ -255,6 +256,7 @@ namespace Navigationsprojekt.Views
                        bitmapReal.GetPixel(Convert.ToInt32(Canvas.GetLeft(car) + 1), Convert.ToInt32(Canvas.GetTop(car) + 1)).B == 0)
                     {
                         manuel = false;
+                        auto = false;
                         Canvas.SetLeft(car, Canvas.GetLeft(car) - 5);
                         Canvas.SetTop(car, Canvas.GetTop(car) - 5);
                         atention.IsOpen = true;
